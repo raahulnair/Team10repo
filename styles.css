@@ -2239,6 +2239,11 @@ select.form-control {
   .card {
     box-shadow: none;
     border: 1px solid #ccc;
+     /* Commit 2: Responsive tweak for header + sidebar layout */
+@media (max-width: 768px) {
+  .sidebar { width: 72px; }
+  .dashboard-content { margin-left: 72px; }
+  .dashboard-header { position: sticky; top: 0; z-index: 10; }
   }
 }
 
