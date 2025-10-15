@@ -2243,7 +2243,18 @@ select.form-control {
 @media (max-width: 768px) {
   .sidebar { width: 72px; }
   .dashboard-content { margin-left: 72px; }
-  .dashboard-header { position: sticky; top: 0; z-index: 10; }
+  .dashboard-header { position: sticky; top: 0; z-index: 10; 
+                    }
+   /* Commit 3: Improve focus states for logout + calendar controls */
+button:focus, .btn:focus, a:focus {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}
+#logoutBtn:hover,
+.calendar-nav button:hover {
+  filter: brightness(1.05);
+}
+
   }
 }
 
