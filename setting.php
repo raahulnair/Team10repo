@@ -1,7 +1,20 @@
 <?php
-session_start();
+// Commit 1: Logout handler + page flag
+if (session_status() !== PHP_SESSION_ACTIVE) { session_start(); }
 $setting = true;
 
+// If user clicks "Log out", destroy session and redirect.
+// Change the redirect target if your login page differs.
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['logout'])) {
+  $_SESSION = [];
+  if (ini_get("session.use_cookies")) {
+    $params = session_get_cookie_params();
+    setcookie(session_name(), '', time() - 42000, $params["path"], $params["domain"], $params["secure"], $params["httponly"]);
+  }
+  session_destroy();
+  header('Location: index.php');
+  exit();
+}
 ?>
 <!doctype html>
 <html lang="en">
@@ -11,127 +24,128 @@ $setting = true;
   <title>Settings — ABC Corporation</title>
   <link rel="stylesheet" href="../css/styles.css" />
   <script src="../js/employee.js?v=3" defer></script>
-
 </head>
 <body>
-    <div class="dashboard-container">
-        <?php
-        include 'sidebar.php';
-        ?>
-        <!-- Main Content -->
-        <main class="main-content">
-            <!-- Top Header -->
-            <?php 
-                include 'header.php'
-            ;?>
+  <div class="dashboard-container">
+    <?php include 'sidebar.php'; ?>
 
-            <!-- Dashboard Content -->
-            <div class="dashboard-content">
-                <div class="content-grid">
-                    
-                    
-                    <main class="main">
-                    
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <?php include 'header.php'; ?>
 
-                    <section class="content container">
-                        <div class="card">
-                        <div class="card-header">
-                            <div class="card-title">Profile</div>
-                        </div>
-                        <div class="card-body">
-                            <div class="form-grid cols-2">
-                            <div class="field">
-                                <label class="label">Full Name</label>
-                                <input class="input" placeholder="John Anderson" />
-                            </div>
-                            <div class="field">
-                                <label class="label">Email</label>
-                                <input class="input" type="email" placeholder="john.anderson@abc.com" />
-                            </div>
-                            <div class="field">
-                                <label class="label">Department</label>
-                                <select class="select">
-                                <option>Human Resources</option>
-                                <option>IT</option>
-                                <option>Finance</option>
-                                <option>Marketing</option>
-                                </select>
-                            </div>
-                            <div class="field">
-                                <label class="label">Phone</label>
-                                <input class="input" placeholder="+1 (555) 123-4567" />
-                            </div>
-                            </div>
-                            <div class="form-actions">
-                            <button class="btn">Update Profile</button>
-                            <button class="btn ghost">Cancel</button>
-                            </div>
-                        </div>
-                        </div>
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        <div class="content-grid">
+          <main class="main">
+            <section class="content container">
 
-                        <div style="height:16px"></div>
-
-                        <div class="card">
-                        <div class="card-header"><div class="card-title">Security</div></div>
-                        <div class="card-body">
-                            <div class="form-grid cols-2">
-                            <div class="field">
-                                <label class="label">Current Password</label>
-                                <input class="input" type="password" />
-                            </div>
-                            <div class="field">
-                                <label class="label">New Password</label>
-                                <input class="input" type="password" />
-                            </div>
-                            <div class="field">
-                                <label class="label">Two-Factor Authentication</label>
-                                <select class="select">
-                                <option>Disabled</option>
-                                <option>Authenticator App</option>
-                                <option>SMS</option>
-                                </select>
-                            </div>
-                            <div class="field">
-                                <label class="label">Session Timeout (minutes)</label>
-                                <input class="input" type="number" value="30" />
-                            </div>
-                            </div>
-                            <div class="form-actions">
-                            <button class="btn">Update Security</button>
-                            <button class="btn ghost">Cancel</button>
-                            </div>
-                        </div>
-                        </div>
-
-                        <div style="height:16px"></div>
-
-                    <div class="card">
-                        
-                        <div class="card-body">
-                            <button class="btn" style="color: red;" id="logoutBtn">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-right:8px">
-                                    <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/>
-                                    <path d="M16 17l5-5-5-5"/>
-                                    <path d="M21 12H9"/>
-                                </svg>
-                                Log out
-                            </button>
-                    </div>
-                    </section>
-                    </main>
-
-                   
-
-                 
-
-
-                   
-                   
+              <!-- Profile Card -->
+              <div class="card">
+                <div class="card-header">
+                  <div class="card-title">Profile</div>
                 </div>
-            </div>
-        </main>
-    </div>
- 
+                <div class="card-body">
+                  <div class="form-grid cols-2">
+                    <div class="field">
+                      <label class="label">Full Name</label>
+                      <input class="input" placeholder="John Anderson" />
+                    </div>
+                    <div class="field">
+                      <label class="label">Email</label>
+                      <input class="input" type="email" placeholder="john.anderson@abc.com" />
+                    </div>
+                    <div class="field">
+                      <label class="label">Department</label>
+                      <select class="select">
+                        <option>Human Resources</option>
+                        <option>IT</option>
+                        <option>Finance</option>
+                        <option>Marketing</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label class="label">Phone</label>
+                      <input class="input" placeholder="+1 (555) 123-4567" />
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn">Update Profile</button>
+                    <button class="btn ghost" type="button">Cancel</button>
+                  </div>
+                </div>
+              </div>
 
+              <div style="height:16px"></div>
+
+              <!-- Security Card -->
+              <div class="card">
+                <div class="card-header"><div class="card-title">Security</div></div>
+                <div class="card-body">
+                  <div class="form-grid cols-2">
+                    <div class="field">
+                      <label class="label">Current Password</label>
+                      <input class="input" type="password" />
+                    </div>
+                    <div class="field">
+                      <label class="label">New Password</label>
+                      <input class="input" type="password" />
+                    </div>
+                    <div class="field">
+                      <label class="label">Two-Factor Authentication</label>
+                      <select class="select">
+                        <option>Disabled</option>
+                        <option>Authenticator App</option>
+                        <option>SMS</option>
+                      </select>
+                    </div>
+                    <div class="field">
+                      <label class="label">Session Timeout (minutes)</label>
+                      <input class="input" type="number" value="30" />
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="btn">Update Security</button>
+                    <button class="btn ghost" type="button">Cancel</button>
+                  </div>
+                </div>
+              </div>
+
+              <div style="height:16px"></div>
+
+              <!-- Logout Card -->
+              <div class="card">
+                <div class="card-body">
+                  <!-- Real POST form triggers the PHP handler above -->
+                  <form method="POST">
+                    <button
+                      class="btn"
+                      style="color: red;"
+                      id="logoutBtn"
+                      type="submit"
+                      name="logout"
+                      value="1"
+                      aria-label="Log out of EMS"
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                          stroke-linejoin="round" style="margin-right:8px">
+                        <path d="M9 21H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h3"/>
+                        <path d="M16 17l5-5-5-5"/>
+                        <path d="M21 12H9"/>
+                      </svg>
+                      Log out
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+            </section>
+          </main>
+        </div>
+      </div>
+    </main>
+  </div>
 </body>
 </html>
+
